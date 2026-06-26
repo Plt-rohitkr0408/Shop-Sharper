@@ -1,5 +1,7 @@
 package com.shopsharper.auth_service.service.impl;
 
+import com.shopsharper.auth_service.custom.DuplicateResourceException;
+import com.shopsharper.auth_service.custom.ResourceNotFoundException;
 import com.shopsharper.auth_service.dto.RegisterRequest;
 import com.shopsharper.auth_service.dto.RegisterResponse;
 import com.shopsharper.auth_service.entity.Role;
@@ -27,15 +29,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public RegisterResponse register(RegisterRequest registerRequest) {
         if(userRepository.existsByEmail(registerRequest.getEmail())) {
-            throw new RuntimeException("Email already exists");
+            throw new DuplicateResourceException("Email already exists");
         }
 
         Role role = roleRepository.findByName(RoleName.ROLE_CUSTOMER)
-                .orElseGet(()->{
-                    Role newRole = new Role();
-                    newRole.setName(RoleName.ROLE_CUSTOMER);
-                    return roleRepository.save(newRole);
-                });
+                .orElseThrow(() -> new ResourceNotFoundException("Role Not Found"));
 
         User user = User.builder().
                 firstName(registerRequest.getFirstName())
