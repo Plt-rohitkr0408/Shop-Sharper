@@ -1,4 +1,4 @@
-package com.shopsharper.auth_service.dto.Mapper;
+package com.shopsharper.auth_service.Mapper;
 
 import com.shopsharper.auth_service.dto.request.CategoryRequest;
 import com.shopsharper.auth_service.dto.response.CategoryResponse;
