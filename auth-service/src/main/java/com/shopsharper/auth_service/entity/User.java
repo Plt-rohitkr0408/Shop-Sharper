@@ -48,6 +48,9 @@ public class User {
     public void createUser(){
         createAt = LocalDateTime.now();
         updateAt = LocalDateTime.now();
+        if(!enables){
+            this.enables = true;
+        }
     }
 
     @PostPersist

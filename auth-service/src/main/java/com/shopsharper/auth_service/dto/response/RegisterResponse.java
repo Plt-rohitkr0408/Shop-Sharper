@@ -1,4 +1,4 @@
-package com.shopsharper.auth_service.dto;
+package com.shopsharper.auth_service.dto.response;
 
 public class RegisterResponse {
     private Long id;

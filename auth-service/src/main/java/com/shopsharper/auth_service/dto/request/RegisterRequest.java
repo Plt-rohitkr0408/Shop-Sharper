@@ -1,4 +1,4 @@
-package com.shopsharper.auth_service.dto;
+package com.shopsharper.auth_service.dto.request;
 
 
 import jakarta.validation.constraints.Email;

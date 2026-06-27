@@ -1,6 +1,4 @@
-package com.shopsharper.auth_service.dto;
-
-import org.springframework.http.HttpStatus;
+package com.shopsharper.auth_service.dto.response;
 
 import java.time.LocalDateTime;
 

@@ -1,6 +1,6 @@
 package com.shopsharper.auth_service.custom;
 
-import com.shopsharper.auth_service.dto.ErrorResponse;
+import com.shopsharper.auth_service.dto.response.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

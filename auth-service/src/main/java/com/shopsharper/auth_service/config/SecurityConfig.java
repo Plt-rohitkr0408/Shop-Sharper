@@ -1,5 +1,6 @@
 package com.shopsharper.auth_service.config;
 
+import com.shopsharper.auth_service.security.JwtConfigurationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,19 +9,23 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig  {
 
     private final UserDetailsService userDetailsService;
+    private final JwtConfigurationFilter  jwtConfigurationFilter;
 
     @Autowired
-    public SecurityConfig(UserDetailsService userDetailsService) {
+    public SecurityConfig(UserDetailsService userDetailsService , JwtConfigurationFilter jwtConfigurationFilter) {
         this.userDetailsService = userDetailsService;
+        this.jwtConfigurationFilter = jwtConfigurationFilter;
     }
 
     @Bean
@@ -41,15 +46,21 @@ public class SecurityConfig  {
         return daoAuthenticationProvider;
     }
 
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.
                 csrf(c-> c.disable())
                 .authorizeHttpRequests(auth->
-                        auth.requestMatchers("/api/auth/**",
-                                "/api/test").permitAll()
+                        auth.requestMatchers("/api/auth/**").permitAll()
                         .anyRequest().authenticated()
                         )
-                .httpBasic(b->{});
+                .httpBasic(b->{})
+                .authenticationProvider(authenticationProvider())
+                .sessionManagement(session->
+                        session.sessionCreationPolicy(
+                                SessionCreationPolicy.STATELESS
+                        ))
+                .addFilterBefore(jwtConfigurationFilter , UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }

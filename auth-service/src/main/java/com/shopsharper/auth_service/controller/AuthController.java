@@ -1,7 +1,9 @@
 package com.shopsharper.auth_service.controller;
 
-import com.shopsharper.auth_service.dto.RegisterRequest;
-import com.shopsharper.auth_service.dto.RegisterResponse;
+import com.shopsharper.auth_service.dto.request.LoginRequest;
+import com.shopsharper.auth_service.dto.response.LoginResponse;
+import com.shopsharper.auth_service.dto.request.RegisterRequest;
+import com.shopsharper.auth_service.dto.response.RegisterResponse;
 import com.shopsharper.auth_service.service.impl.AuthServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/auth/register")
+@RequestMapping("/api/auth")
 public class AuthController {
     private final AuthServiceImpl authServiceImpl;
     @Autowired
@@ -17,16 +19,14 @@ public class AuthController {
         this.authServiceImpl = authServiceImpl;
     }
 
-    @GetMapping
-    public ResponseEntity<String> Reponse(){
-        System.out.println("register ko check kro.......");
-        return ResponseEntity.ok("Auth service is running");
-    }
-
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest registerRequest){
-        System.out.println("Register.........");
        RegisterResponse registerResponse = authServiceImpl.register(registerRequest);
         return ResponseEntity.ok(registerResponse);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest){
+        return ResponseEntity.ok(authServiceImpl.login(loginRequest));
     }
 }
