@@ -11,11 +11,9 @@ import com.shopsharper.auth_service.service.CatogeryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class CategoryServiceImpl implements CatogeryService {
@@ -42,11 +40,10 @@ public class CategoryServiceImpl implements CatogeryService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<CategoryResponse> getCategories(Pageable pageable) {
-
+    public Page<CategoryResponse> getCategories(org.springframework.data.domain.Pageable pageable) {
+        Page<Category>  categories = categoryRepo.findAll(pageable);
         CategoryMapper categoryMapper = new CategoryMapper();
-        return  categoryRepo.findAll(pageable)
-                .map(categoryMapper::toResponse);
+        return  categories.map(categoryMapper::toResponse);
     }
 
     @Override
@@ -66,9 +63,12 @@ public class CategoryServiceImpl implements CatogeryService {
                 ()-> new ResourceNotFoundException("Category Not Found")
         );
 
-        if(categoryRepo.existsByName(request.getName())){
-            throw new DuplicateResourceException("Category already exists");
-        }
+        categoryRepo.findByName(request.getName())
+                .ifPresent(existing ->{
+                    if(!existing.getId().equals(id)){
+                        throw new DuplicateResourceException("Category already exists");
+                    }
+                        });
 
         category.setName(request.getName());
         category.setDescription(request.getDescription());
@@ -81,5 +81,12 @@ public class CategoryServiceImpl implements CatogeryService {
        CategoryResponse categoryResponse = getCategoryById(id);
        categoryRepo.deleteById(id);
         return categoryResponse;
+    }
+
+    @Override
+    public Page<CategoryResponse> searchCategory(String name, Pageable pageable) {
+        Page<Category>  categories = categoryRepo.findByNameContainingIgnoreCase(name , pageable);
+        CategoryMapper categoryMapper = new CategoryMapper();
+        return categories.map(categoryMapper::toResponse);
     }
 }

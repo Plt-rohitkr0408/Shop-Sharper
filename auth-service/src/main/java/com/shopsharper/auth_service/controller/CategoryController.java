@@ -48,7 +48,7 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<org.springframework.data.domain.Page<CategoryResponse>>> getCategories(
+    public ResponseEntity<ApiResponse<Page<CategoryResponse>>> getCategories(
             @PageableDefault(size = 5,sort = "name")
             Pageable pageable
     ){
@@ -80,6 +80,17 @@ public class CategoryController {
                         .success(true)
                         .data(categoryService.deleteCategoryById(id))
                 .build()
-        )
+        );
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<Page<CategoryResponse>>> search(@RequestParam String name , Pageable pageable){
+        return ResponseEntity.ok(
+                ApiResponse.<Page<CategoryResponse>>builder()
+                        .success(true)
+                        .message("Search category successfully")
+                        .data(categoryService.searchCategory(name,pageable))
+                        .build()
+        );
     }
 }
