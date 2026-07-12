@@ -43,7 +43,7 @@ public class ProductController {
                .message("Success")
                .build());
     }
-cd
+
     @PostMapping
     public ResponseEntity<ApiResponse<ResponseProduct>> createProduct(@Valid @RequestBody ProductRequest productRequest){
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.<ResponseProduct>builder()
@@ -69,5 +69,22 @@ cd
                         .data(productService.deleteProduct(id))
                         .message("product deleted successfully")
                 .build());
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<Page<ResponseProduct>>> searchProducts(
+            @RequestParam String keyword,
+            @PageableDefault(size = 5, sort = "name") Pageable pageable) {
+
+        Page<ResponseProduct> response =
+                productService.searchProductByName(keyword, pageable);
+
+        return ResponseEntity.ok(
+                ApiResponse.<Page<ResponseProduct>>builder()
+                        .success(true)
+                        .message("Products fetched successfully")
+                        .data(response)
+                        .build()
+        );
     }
 }

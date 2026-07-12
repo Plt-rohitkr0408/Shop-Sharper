@@ -1,0 +1,52 @@
+
+.hero{
+    text-align: center;
+    padding: 80px 20px;
+    background-color:  #f3f4f6;
+}
+
+.hero h1{
+    font-size: 45px;
+}
+
+.hero p {
+    margin: 20px 0;
+    font-size: 20px;
+}
+
+.hero button{
+    padding: 12px 25px;
+    border:none;
+    border-radius: 5px;
+    background-color: #2563eb;
+    color: white;
+    cursor: pointer;
+}
+
+.featured{
+    display: block;
+    justify-content: center;
+    gap: 25px;
+}
+
+.featured h2{
+    text-align: center;
+}
+
+.products{
+display: flex;
+justify-content: center;
+}
+
+.card{
+    width: 200px;
+    height: 220px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 22px;
+}
