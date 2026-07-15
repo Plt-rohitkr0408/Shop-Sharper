@@ -15,11 +15,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+
 @Service
 public class ProductServiceImpl implements ProductService {
 
     private final ProductMapper mapper;
-
     private final ProductRepository productRepository;
     private final CategoryRepo  categoryRepo;
 
@@ -91,5 +92,23 @@ public class ProductServiceImpl implements ProductService {
         Page<Product> products = productRepository.findByNameContainingIgnoreCase(name, pageable);
         return products.map(mapper::toResponse);
 
+    }
+
+    @Override
+    public Page<ResponseProduct> getProductsByCategory(Long id, Pageable pageable) {
+        categoryRepo.findById(id).orElseThrow(()-> new ResourceNotFoundException("Category not found with id " + id));
+        Page<Product> products = productRepository.findByCategory_Id(id, pageable);
+        return products.map(mapper::toResponse);
+    }
+
+    @Override
+    public Page<ResponseProduct> getProductByPriceFilter(BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable) {
+
+        if(minPrice.compareTo(maxPrice) > 0) {
+            throw new RuntimeException("Minimum price must be greater than or equal to Maximum price");
+        }
+
+        Page<Product> products = productRepository.findByPriceBetween(minPrice, maxPrice, pageable);
+        return products.map(mapper::toResponse);
     }
 }

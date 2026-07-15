@@ -13,8 +13,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+
 @RestController
 @RequestMapping("/api/v1/products")
+@CrossOrigin(origins = "http://localhost:5173")
 public class ProductController {
 
     private final ProductService productService;
@@ -86,5 +89,26 @@ public class ProductController {
                         .data(response)
                         .build()
         );
+    }
+
+    @GetMapping("/category/{id}")
+    public ResponseEntity<ApiResponse<Page<ResponseProduct>>> getProductsByCategory( @PathVariable Long id, @PageableDefault(size = 5 ,sort = "name") Pageable pageable) {
+       Page<ResponseProduct> responseProducts = productService.getProductsByCategory(id, pageable);
+        return ResponseEntity.ok(ApiResponse.<Page<ResponseProduct>>builder()
+                .success(true)
+                        .message("Products fetched successfully")
+                .data(responseProducts).build());
+    }
+
+    @GetMapping("/price")
+    public ResponseEntity<ApiResponse<Page<ResponseProduct>>> getProductsByPriceFilter(@RequestParam BigDecimal minPrice ,@RequestParam BigDecimal maxPrice , @PageableDefault(size = 5,sort = "price") Pageable pageable) {
+      Page<ResponseProduct> responseProducts =  productService.getProductByPriceFilter( minPrice, maxPrice, pageable);
+      return ResponseEntity.ok(
+              ApiResponse.<Page<ResponseProduct>>builder()
+                      .success(true)
+                      .message("Products fetched successfully")
+                      .data(responseProducts)
+                      .build()
+      );
     }
 }

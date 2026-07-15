@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./component/layout/Navbar";
-
+import Footer from "./component/layout/Footer";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import Login from "./component/auth/Login";
@@ -27,6 +27,8 @@ function App() {
         <Route path="/register" element={<Register />} />
 
       </Routes>
+      
+      <Footer />
 
     </>
   );

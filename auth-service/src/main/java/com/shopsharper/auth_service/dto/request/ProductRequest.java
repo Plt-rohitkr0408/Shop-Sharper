@@ -19,17 +19,16 @@ public class ProductRequest {
 
     private String description;
 
-    @NotBlank(message = "Price Required")
+    @NotNull(message = "Price Required")
     @PositiveOrZero
     private BigDecimal price;
 
-    @NotBlank(message ="Stock Quantity")
+    @NotNull(message ="Stock Quantity is not blank")
     @PositiveOrZero
     private Integer stock;
 
 
-    @NotBlank(message = "category id")
-    @NotNull
+    @NotNull(message = "category id is not blank")
     private Long categoryId;
 
 }

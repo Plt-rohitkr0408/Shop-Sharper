@@ -7,3 +7,7 @@ export const getAllProduct=()=>{
 export const getProductById =(id)=>{
     return API.get(`/products/${id}`);
 };
+
+export const searchProducts = (keyword) => {
+    return API.get(`/products/search?keyword=${keyword}`);
+};

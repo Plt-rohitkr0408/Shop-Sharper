@@ -5,6 +5,8 @@ import com.shopsharper.auth_service.dto.response.ResponseProduct;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
+
 public interface ProductService {
      ResponseProduct getProductById(Long id);
      Page<ResponseProduct> getAllProducts(Pageable pageable);
@@ -14,4 +16,7 @@ public interface ProductService {
 
      Page<ResponseProduct> searchProductByName(String name ,  Pageable pageable);
 
+     Page<ResponseProduct> getProductsByCategory(Long id, Pageable pageable);
+
+     Page<ResponseProduct>  getProductByPriceFilter(BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
 }

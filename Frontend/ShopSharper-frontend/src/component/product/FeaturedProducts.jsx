@@ -1,65 +1,40 @@
-import ProductCard from "./ProductCard";
+import { useEffect, useState } from "react";
 import "../../styles/FeaturedProducts.css";
+import { getAllProduct } from "../services/productService";
+import ProductCard from "./ProductCard";
 
 function FeaturedProducts() {
+  const [product, setProduct] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-    const products = [
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
-        {
-            id:1,
-            name:"iPhone 15",
-            price:79999,
-            image:"https://via.placeholder.com/250"
-        },
+  async function fetchProducts() {
+    try {
+      const response = await getAllProduct();
+      setProduct(response.data.data.content);
+    } catch (err) {
+      setError("unable to load products");
+    } finally {
+      setLoading(false);
+    }
+  }
 
-        {
-            id:2,
-            name:"MacBook Air",
-            price:99999,
-            image:"https://via.placeholder.com/250"
-        },
-
-        {
-            id:3,
-            name:"Samsung S24",
-            price:69999,
-            image:"https://via.placeholder.com/250"
-        },
-
-        {
-            id:4,
-            name:"Sony Headphones",
-            price:14999,
-            image:"https://via.placeholder.com/250"
-        }
-
-    ];
-
-    return (
-
-        <section className="featured-products">
-
-            <h2>Featured Products</h2>
-
-            <div className="products-grid">
-
-                {
-                    products.map(product => (
-
-                        <ProductCard
-                            key={product.id}
-                            product={product}
-                        />
-
-                    ))
-                }
-
-            </div>
-
-        </section>
-
-    );
-
+  if (loading) return <h2>Loading.....</h2>;
+  if (error) return <h2>{error}</h2>;
+  return (
+    <section className="featured-products">
+      <h2>Featured Products</h2>
+      <div className="products-grid">
+        {product.map((p) => (
+          <ProductCard key={p.id} product={p} />
+        ))}
+      </div>
+    </section>
+  );
 }
 
 export default FeaturedProducts;
