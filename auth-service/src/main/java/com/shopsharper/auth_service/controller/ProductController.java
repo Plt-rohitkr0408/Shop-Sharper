@@ -4,6 +4,7 @@ package com.shopsharper.auth_service.controller;
 import com.shopsharper.auth_service.dto.request.ProductRequest;
 import com.shopsharper.auth_service.dto.response.ApiResponse;
 import com.shopsharper.auth_service.dto.response.ResponseProduct;
+import com.shopsharper.auth_service.enums.ProductStatus;
 import com.shopsharper.auth_service.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -110,5 +111,17 @@ public class ProductController {
                       .data(responseProducts)
                       .build()
       );
+    }
+
+    public ResponseEntity<ApiResponse<Page<ResponseProduct>>> getProductByStatus(@RequestParam ProductStatus status, @PageableDefault(size = 5,sort = "name")Pageable pageable) {
+        Page<ResponseProduct>  responseProducts = productService.getProductsByStatus(status, pageable);
+
+        return   ResponseEntity.ok(
+                    ApiResponse.<Page<ResponseProduct>>builder()
+                        .success(true)
+                        .message("Products fetched successfully")
+                        .data(responseProducts)
+                        .build()
+        );
     }
 }

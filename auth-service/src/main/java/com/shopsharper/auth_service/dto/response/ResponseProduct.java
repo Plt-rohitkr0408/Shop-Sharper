@@ -1,5 +1,6 @@
 package com.shopsharper.auth_service.dto.response;
 
+import com.shopsharper.auth_service.enums.ProductStatus;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,5 +16,6 @@ public class ResponseProduct {
     private String category;
     private String description;
     private boolean active;
+    private ProductStatus status;
 }
 

@@ -1,6 +1,7 @@
 package com.shopsharper.auth_service.entity;
 
 
+import com.shopsharper.auth_service.enums.ProductStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,4 +29,7 @@ public class Product extends BaseEntity{
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ProductStatus status= ProductStatus.ACTIVE;
 }

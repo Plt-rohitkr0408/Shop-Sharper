@@ -6,6 +6,7 @@ import com.shopsharper.auth_service.dto.request.ProductRequest;
 import com.shopsharper.auth_service.dto.response.ResponseProduct;
 import com.shopsharper.auth_service.entity.Category;
 import com.shopsharper.auth_service.entity.Product;
+import com.shopsharper.auth_service.enums.ProductStatus;
 import com.shopsharper.auth_service.repository.CategoryRepo;
 import com.shopsharper.auth_service.repository.ProductRepository;
 import com.shopsharper.auth_service.service.ProductService;
@@ -109,6 +110,12 @@ public class ProductServiceImpl implements ProductService {
         }
 
         Page<Product> products = productRepository.findByPriceBetween(minPrice, maxPrice, pageable);
+        return products.map(mapper::toResponse);
+    }
+
+    @Override
+    public Page<ResponseProduct> getProductsByStatus(ProductStatus status, Pageable pageable) {
+        Page<Product> products= productRepository.findByStatus(status, pageable);
         return products.map(mapper::toResponse);
     }
 }

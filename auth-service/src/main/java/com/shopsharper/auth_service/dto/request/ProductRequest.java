@@ -1,5 +1,6 @@
 package com.shopsharper.auth_service.dto.request;
 
+import com.shopsharper.auth_service.enums.ProductStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -30,5 +31,7 @@ public class ProductRequest {
 
     @NotNull(message = "category id is not blank")
     private Long categoryId;
+
+    private ProductStatus status;
 
 }

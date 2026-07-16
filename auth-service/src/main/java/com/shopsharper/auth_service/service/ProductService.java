@@ -2,6 +2,7 @@ package com.shopsharper.auth_service.service;
 
 import com.shopsharper.auth_service.dto.request.ProductRequest;
 import com.shopsharper.auth_service.dto.response.ResponseProduct;
+import com.shopsharper.auth_service.enums.ProductStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -19,4 +20,8 @@ public interface ProductService {
      Page<ResponseProduct> getProductsByCategory(Long id, Pageable pageable);
 
      Page<ResponseProduct>  getProductByPriceFilter(BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
+
+     Page<ResponseProduct>  getProductsByStatus(ProductStatus status, Pageable pageable);
+
+
 }
