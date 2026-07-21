@@ -1,4 +1,4 @@
-# 🔐 ShopSharper - Auth Service
+# 🔐 ShopSharper -   E-commerce Platform
 
 A secure authentication and authorization microservice for the **ShopSharper E-Commerce Platform** built using **Spring Boot**, **Spring Security**, **JWT**, **JPA**, and **MySQL**.
 
