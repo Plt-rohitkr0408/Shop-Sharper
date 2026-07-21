@@ -1,6 +1,7 @@
 package com.shopsharper.auth_service.service.impl;
 
 import com.shopsharper.auth_service.Mapper.OrderMapper;
+import com.shopsharper.auth_service.custom.ResourceNotFoundException;
 import com.shopsharper.auth_service.dto.request.OrderPlacedRequest;
 import com.shopsharper.auth_service.dto.response.OrderResponse;
 import com.shopsharper.auth_service.entity.*;
@@ -8,15 +9,17 @@ import com.shopsharper.auth_service.enums.OrderStatus;
 import com.shopsharper.auth_service.enums.PaymentMethod;
 import com.shopsharper.auth_service.repository.*;
 import com.shopsharper.auth_service.service.OrderService;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class OrderServiceImpl implements OrderService {
 
     private final UserRepository userRepository;
@@ -61,6 +64,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderResponse orderPlaced(Long userId, OrderPlacedRequest orderPlacedRequest) {
         User user = getUser(userId);
+
         Cart cart = getCartByUser(user);
 
         if(cart.getCartItems().isEmpty()){
@@ -75,7 +79,7 @@ public class OrderServiceImpl implements OrderService {
         for(CartItem cartItem : cart.getCartItems()){
             Product product = cartItem.getProduct();
             if(product.getStock() < cartItem.getQuantity()){
-                throw new IllegalStateException(product.getName() + " is out of stock");
+                throw new ResourceNotFoundException(product.getName() + " is out of stock");
             }
 
             product.setStock(product.getStock()-cartItem.getQuantity());
@@ -102,21 +106,58 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderResponse getOrderById(Long orderId) {
-        return null;
+        Order order =orderRepository.findById(orderId).orElseThrow(()->new IllegalStateException("Order id not found"));
+
+        return orderMapper.orderResponse(order);
     }
 
     @Override
     public Page<OrderResponse> getUserOrders(Long userId, Pageable pageable) {
-        return null;
+        User user = getUser(userId);
+
+        Page<Order> orders = orderRepository.findByUser(user, pageable);
+
+        return orders.map(orderMapper::orderResponse);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<OrderResponse> getOrdersByStatus(String status, Pageable pageable) {
-        return null;
+
+        OrderStatus orderStatus = OrderStatus.valueOf(status.toUpperCase());
+
+        Page<Order> orders =
+                orderRepository.findByStatus(orderStatus, pageable);
+
+        return orders.map(orderMapper::orderResponse);
     }
 
     @Override
     public String cancelOrder(Long orderId) {
-        return "";
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Order not found"));
+
+        if (order.getStatus() == OrderStatus.DELIVERED) {
+            throw new IllegalStateException(
+                    "Delivered order cannot be cancelled");
+        }
+
+        for (OrderItem item : order.getOrderItems()) {
+
+            Product product = item.getProduct();
+
+            product.setStock(
+                    product.getStock() + item.getQuantity());
+
+            productRepository.save(product);
+        }
+
+        order.setStatus(OrderStatus.CANCELLED);
+
+        orderRepository.save(order);
+
+        return "Order cancelled successfully";
     }
 }

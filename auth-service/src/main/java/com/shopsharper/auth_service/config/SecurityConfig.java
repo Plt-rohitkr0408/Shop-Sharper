@@ -1,7 +1,10 @@
 package com.shopsharper.auth_service.config;
 
+import com.razorpay.RazorpayClient;
+import com.razorpay.RazorpayException;
 import com.shopsharper.auth_service.security.JwtConfigurationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,6 +26,11 @@ public class SecurityConfig  {
 
     private final UserDetailsService userDetailsService;
     private final JwtConfigurationFilter  jwtConfigurationFilter;
+    @Value("${azorpay.key.id}")
+    private static String key;
+    @Value("${razorpay.key.secret}")
+    private static   String secret;
+
 
     @Autowired
     public SecurityConfig(UserDetailsService userDetailsService , JwtConfigurationFilter jwtConfigurationFilter) {
@@ -46,6 +54,11 @@ public class SecurityConfig  {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(userDetailsService);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthenticationProvider;
+    }
+
+    @Bean
+    public RazorpayClient razorpayClient() throws RazorpayException {
+        return new RazorpayClient(key, secret);
     }
 
     @Bean

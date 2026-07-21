@@ -53,4 +53,7 @@ public class Order {
     public void orderDate(){
         this.orderDate = LocalDateTime.now();
     }
+
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL , fetch = FetchType.LAZY)
+    private Payment payment;
 }

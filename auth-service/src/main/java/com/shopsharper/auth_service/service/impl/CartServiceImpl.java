@@ -15,11 +15,12 @@ import com.shopsharper.auth_service.repository.UserRepository;
 import com.shopsharper.auth_service.service.CartService;
 import lombok.Setter;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 
-@Setter
+@Service
 public class CartServiceImpl implements CartService {
     private final CartMapper cartMapper;
     private final ProductRepository productRepository;
